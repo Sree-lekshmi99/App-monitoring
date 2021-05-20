@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 
 import 'screens/Home.dart';
 import 'screens/to_add_apps.dart';
-import 'screens/Bugfix.dart';
+
 
 void main() {
   runApp(MaterialApp(

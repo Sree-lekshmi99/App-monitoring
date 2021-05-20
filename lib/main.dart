@@ -2,7 +2,10 @@ import 'package:curved_navigation_bar/curved_navigation_bar.dart';
 import 'package:flutter/material.dart';
 
 import 'screens/Home.dart';
+
 import 'screens/to_add_apps.dart';
+import 'screens/to_add_apps.dart';
+import 'screens/trackedapps.dart';
 
 
 void main() {
@@ -25,7 +28,7 @@ class AppMonitor extends StatefulWidget {
 class _AppMonitorState extends State<AppMonitor> {
   int pageIndex = 0;
   final ListAppsPage _homescreen = ListAppsPage();
-  final AddAppsToTrack _addAppToTrack = new AddAppsToTrack();
+  final AddAppsToTrack _addAppsToTrack = new AddAppsToTrack();
 
   Widget _showscreens = new ListAppsPage();
 
@@ -37,7 +40,7 @@ class _AppMonitorState extends State<AppMonitor> {
         return _homescreen;
         break;
       case 1:
-        return _addAppToTrack;
+        return _addAppsToTrack;
         break;
       default:
         return new Container(

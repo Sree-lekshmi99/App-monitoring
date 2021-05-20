@@ -56,7 +56,7 @@ class _TrackingAppsState extends State<TrackingApps> {
           {
             var item = AppModel(
                 title: app.appName,
-                usageinfo: x.usage.toString(),
+              //  usageinfo: x.usage.toString(),
                 icon: app.icon
 
             );
@@ -88,7 +88,7 @@ class _TrackingAppsState extends State<TrackingApps> {
               new ListTile(
                 leading: Image.memory(listApps[i].icon),
                 title: new Text(listApps[i].title),
-                subtitle: new Text(listApps[i].usageinfo),
+             //   subtitle: new Text(listApps[i].usageinfo),
                 onTap: (){
                   //  DeviceApps.openApp(listApps[i].package);
                 },
@@ -96,8 +96,7 @@ class _TrackingAppsState extends State<TrackingApps> {
             ],
           ),
         ),
-        // floatingActionButton: FloatingActionButton(
-        //     onPressed: _getApp, child: Icon(Icons.file_download)),
+
       ),
     );
   }
@@ -118,32 +117,4 @@ class AppModel{
 
 
 
-// class TrackingApps extends StatefulWidget {
-//   const TrackingApps({Key key}) : super(key: key);
-//
-//   @override
-//   _TrackingAppsState createState() => _TrackingAppsState();
-// }
-//
-// class _TrackAppsState extends State<TrackingApps> {
-//   @override
-//   Widget build(BuildContext context) {
-//     return Scaffold(
-//       appBar: AppBar(
-//         title: Text('Track ',
-//           style: TextStyle(
-//               color: Colors.black
-//           ),),
-//       ),
-//
-//
-//
-//       floatingActionButton: new FloatingActionButton
-//         (
-//         onPressed: () { AddAppsToTrack();
-//         },
-//
-//       ),
-//     );
-//   }
-// }
+

@@ -1,103 +1,106 @@
 import 'package:flutter/material.dart';
 import 'package:device_apps/device_apps.dart';
 import 'package:app_usage/app_usage.dart';
-import 'package:monitoring_app/functions/spin.dart';
-import 'package:monitoring_app/functions/calc.dart';
-import 'dart:developer';
+import 'dart:typed_data';
 
-
-class Home extends StatefulWidget {
-  const Home({Key key}) : super(key: key);
-
+class ListAppsPage extends StatelessWidget {
   @override
-  _HomeState createState() => _HomeState();
+  Widget build(BuildContext context) {
+    return Scaffold(
+      body: ListAppsBody(),
+    );
+  }
 }
 
-class _HomeState extends State<Home> {
-  Map<String, double> _infos;
-  List<ApplicationWithIcon> _deviceApps = [];
-  List<Application> apps;
+class ListAppsBody extends StatefulWidget {
+  @override
+  _ListAppBodyState createState() => _ListAppBodyState();
+}
+
+class _ListAppBodyState extends State {
+  List listApps = [];
+  List _infos = [];
 
 
+  @override
+  void initState() {
+    super.initState();
+    _getApp();
+  }
 
-  void getUsageStats() async {
-
-
-
-     apps = await DeviceApps.getInstalledApplications();
-   // apps = await DeviceApps.getInstalledApplications(onlyAppsWithLaunchIntent: true, includeSystemApps: true);
-    bool isInstalled = await DeviceApps.isAppInstalled('com.example.monitoring_app.app');
-   // await DeviceApps.getInstalledApplications(onlyAppsWithLaunchIntent: true, includeAppIcons: true).then((apps) {
-      //_deviceApps = apps ; log('deviceapps:$_deviceApps');
-
-
-
-    AppUsage appUsage = new AppUsage();
+  void _getApp() async{
+    List _apps = await DeviceApps.getInstalledApplications(onlyAppsWithLaunchIntent: true, includeAppIcons: true, includeSystemApps: true);
 
     try {
-
       DateTime endDate = new DateTime.now();
-      DateTime startDate = DateTime(endDate.year, endDate.month, endDate.day, 0, 0, 0);
-      Map<String, double> infoList;
-      await AppUsage.getAppUsage(startDate, endDate).then((value) => log('loge: $value')); //as Map<String, double>;
-      infoList.removeWhere((key,val) => val == 0);
+      DateTime startDate = endDate.subtract(Duration(hours: 1));
+      List<AppUsageInfo> infoList = await AppUsage.getAppUsage(startDate, endDate);
       setState(() {
         _infos = infoList;
-        _deviceApps = _deviceApps.where((app) => _infos.keys.toList().contains(app.packageName)).toList();
+
       });
 
-      for (var info in infoList.keys) {
-        print(info.toString());
+
+      for(var x in infoList){
+        for(var app in _apps){
+          if(x.packageName.contains(app.packageName)
+          )
+          {
+            var item = AppModel(
+                title: app.appName,
+                usageinfo: x.usage.toString(),
+                icon: app.icon
+
+            );
+            listApps.add(item);
+          }
+
+        }
       }
+
+
+
     } on AppUsageException catch (exception) {
       print(exception);
     }
-  }
 
-  @override
-  void initState(){
-    super.initState();
-    getUsageStats();
+
+
+    //reloading state
+    setState(() {});
   }
 
   @override
   Widget build(BuildContext context) {
-    return Center(
-      child: _deviceApps.length == 0 || _infos == null ? loading : Padding(
-        padding: EdgeInsets.fromLTRB(5.0, 10.0, 5.0, 10.0),
-        child: ListView.builder(
-          itemCount: apps.length,
-          itemBuilder: (context, index){
-            return Card(
-              child: Container(
-                padding: EdgeInsets.fromLTRB(20.0, 10.0, 20.0, 10.0),
-                child: Row(
-                  children: <Widget>[
-                    // Expanded(
-                    //     flex: 1,
-                    //     child: Image.memory(apps[index].icon, scale: 8,)
-                    // ),
-                    SizedBox(width: 20,),
-                    Expanded(
-                      flex: 8,
-                      child: Text('${apps[index].appName}', style: TextStyle(fontSize: 16, fontWeight: FontWeight.w300),),
-                    ),
-                    Expanded(
-                      flex: 3,
-                      child: Text('${_infos[apps[index].packageName]}', style: TextStyle(fontSize: 16, fontWeight: FontWeight.w300),),
-                    ),
-                  ],
-                ),
-              ),
-            );
-          },
-        ),
+    return ListView.builder(
+      itemCount: listApps.length,
+      itemBuilder: (context, int i) => Column(
+        children: [
+          new ListTile(
+            leading: Image.memory(listApps[i].icon),
+            title: new Text(listApps[i].title),
+            subtitle: new Text(listApps[i].usageinfo),
+            onTap: (){
+              //  DeviceApps.openApp(listApps[i].package);
+            },
+          ),
+        ],
       ),
     );
   }
-  // @override
-  // void debugFillProperties(DiagnosticPropertiesBuilder properties) {
-  //   super.debugFillProperties(properties);
-  //   properties.add(DiagnosticsProperty<ApplicationWithIcon>('applicationWithIcon', applicationWithIcon));
-  // }
 }
+
+class AppModel{
+  final String title;
+  final String usageinfo;
+  final Uint8List icon;
+
+  AppModel({
+    this.title,
+    this.usageinfo,
+    this.icon
+  });
+}
+
+
+

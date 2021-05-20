@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 
 import 'screens/Home.dart';
 import 'screens/to_add_apps.dart';
+import 'screens/Bugfix.dart';
 
 void main() {
   runApp(MaterialApp(
@@ -23,10 +24,10 @@ class AppMonitor extends StatefulWidget {
 
 class _AppMonitorState extends State<AppMonitor> {
   int pageIndex = 0;
-  final Home _homescreen = Home();
+  final ListAppsPage _homescreen = ListAppsPage();
   final AddAppsToTrack _addAppToTrack = new AddAppsToTrack();
 
-  Widget _showscreens = new Home();
+  Widget _showscreens = new ListAppsPage();
 
   Widget _screenchooser(int screen)
   {

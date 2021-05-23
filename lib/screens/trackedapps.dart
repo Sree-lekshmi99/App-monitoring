@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:device_apps/device_apps.dart';
 import 'dart:typed_data';
 import 'package:app_usage/app_usage.dart';
-
+import 'package:shared_preferences/shared_preferences.dart';
 import 'to_add_apps.dart';
 
 
@@ -56,7 +56,7 @@ class _TrackingAppsState extends State<TrackingApps> {
           {
             var item = AppModel(
                 title: app.appName,
-              //  usageinfo: x.usage.toString(),
+                //  usageinfo: x.usage.toString(),
                 icon: app.icon
 
             );
@@ -81,23 +81,18 @@ class _TrackingAppsState extends State<TrackingApps> {
   Widget build(BuildContext context) {
     return MaterialApp(
       home: Scaffold(
-        body: ListView.builder(
-          itemCount: listApps.length,
-          itemBuilder: (context, int i) => Column(
-            children: [
-              new ListTile(
-                leading: Image.memory(listApps[i].icon),
-                title: new Text(listApps[i].title),
-             //   subtitle: new Text(listApps[i].usageinfo),
-                onTap: (){
-                  //  DeviceApps.openApp(listApps[i].package);
-                },
-              ),
-            ],
-          ),
-        ),
+          body: Text("No apps added to track"),
 
+          floatingActionButton: FloatingActionButton(
+              onPressed: () => Navigator.push(
+                  context,
+                  new MaterialPageRoute(
+                      builder: (context) => AddAppsToTrack())),
+              child: new Icon(Icons.add))
       ),
+
+
+
     );
   }
 }
@@ -112,9 +107,3 @@ class AppModel{
     this.icon
   });
 }
-
-
-
-
-
-

@@ -32,6 +32,8 @@ dependencies:
   app_usage: ^2.0.0
   device_apps: ^2.1.1
   flutter_spinkit: "^4.1.2"
+  shared_preferences: ^2.0.5
+  flutter_datetime_picker: ^1.5.1
 
 dev_dependencies:
   flutter_test:

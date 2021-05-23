@@ -28,7 +28,7 @@ class AppMonitor extends StatefulWidget {
 class _AppMonitorState extends State<AppMonitor> {
   int pageIndex = 0;
   final ListAppsPage _homescreen = ListAppsPage();
-  final AddAppsToTrack _addAppsToTrack = new AddAppsToTrack();
+  final TrackApps _trackApps = new TrackApps();
 
   Widget _showscreens = new ListAppsPage();
 
@@ -40,7 +40,7 @@ class _AppMonitorState extends State<AppMonitor> {
         return _homescreen;
         break;
       case 1:
-        return _addAppsToTrack;
+        return _trackApps;
         break;
       default:
         return new Container(

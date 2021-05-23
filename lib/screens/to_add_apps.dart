@@ -19,6 +19,7 @@ class AddAppsToTrack extends StatefulWidget {
 class _AddAppsToTrackState extends State<AddAppsToTrack> {
   List listApps = [];
   List _infos = [];
+  SharedPreferences preferences;
 
 
   @override
@@ -28,8 +29,10 @@ class _AddAppsToTrackState extends State<AddAppsToTrack> {
   }
 
   void _getApp() async{
+    preferences = await SharedPreferences.getInstance();
+  //  List<String> trackedAppsPackages = preferences.getKeys().toList();
 
-    List _apps = await DeviceApps.getInstalledApplications(onlyAppsWithLaunchIntent: true, includeAppIcons: true, includeSystemApps: true);
+  //  List _apps = await DeviceApps.getInstalledApplications(onlyAppsWithLaunchIntent: true, includeAppIcons: true, includeSystemApps: true);
 
     try {
       DateTime endDate = new DateTime.now();
@@ -42,10 +45,11 @@ class _AddAppsToTrackState extends State<AddAppsToTrack> {
 
 
       for(var x in infoList){
-        for(var app in _apps){
-          if(x.packageName.contains(app.packageName)
-          )
-          {
+  ApplicationWithIcon   app =    await DeviceApps.getApp(x.packageName,true);
+       // for(var app in _apps){
+       //    if(x.packageName.contains(app.packageName)
+       //    )
+       //    {
             var item = AppModel(
                 title: app.appName,
                 //  usageinfo: x.usage.toString(),
@@ -54,9 +58,9 @@ class _AddAppsToTrackState extends State<AddAppsToTrack> {
 
             );
             listApps.add(item);
-          }
+       //   }
 
-        }
+   //     }
       }
 
 
@@ -85,15 +89,28 @@ class _AddAppsToTrackState extends State<AddAppsToTrack> {
                 title: new Text(listApps[i].title),
                 //   subtitle: new Text(listApps[i].usageinfo),
 
-                onTap: () async{
+                onTap: () {
+                  int maxLimitime;
                   DatePicker.showTimePicker(context,
                     theme: DatePickerTheme(
                         doneStyle: TextStyle(color: Colors.black),
                         containerHeight: MediaQuery.of(context).size.height * 0.3
                     ),
                     showTitleActions: true,
-                    onConfirm: (time)  {
+                    onConfirm: (time) async  {
                     print(' confirm $time');
+                    maxLimitime= (time.hour * 60 * 60) + (time.minute * 60);
+                    print(' seconds $maxLimitime ${listApps[i].package}');
+
+
+                    await preferences.setInt(listApps[i].package, maxLimitime);
+
+                    print('saved timed ${preferences.getInt(listApps[i].package)}');
+
+
+                  //  await preferences.setString('package', listApps[i].package);
+
+
 
 
                     },
@@ -122,25 +139,17 @@ class AppModel{
   final Uint8List icon;
   final String package;
 
+
   AppModel({
     this.title,
     this.usageinfo,
     this.icon,
-    this.package
-  });
-}
-
-class AppTime{
-  final String package;
-  final int time;
-
-
-  AppTime({
     this.package,
-    this.time
 
   });
 }
+
+
 
 
 

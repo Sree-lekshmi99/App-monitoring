@@ -28,16 +28,27 @@ class TrackingApps extends StatefulWidget {
 class _TrackingAppsState extends State<TrackingApps> {
   List listApps = [];
   List _infos = [];
+  SharedPreferences preferences;
 
 
   @override
   void initState() {
+   _getApp();
     super.initState();
-    _getApp();
+
+  }
+
+  String _printDuration(Duration duration) {
+    String twoDigits(int n) => n.toString().padLeft(2, "0");
+    String twoDigitMinutes = twoDigits(duration.inMinutes.remainder(60));
+    String twoDigitSeconds = twoDigits(duration.inSeconds.remainder(60));
+    return "${twoDigits(duration.inHours)}:$twoDigitMinutes:$twoDigitSeconds";
   }
 
   void _getApp() async{
-    List _apps = await DeviceApps.getInstalledApplications(onlyAppsWithLaunchIntent: true, includeAppIcons: true, includeSystemApps: true);
+    preferences = await SharedPreferences.getInstance();
+  //  List _apps = await DeviceApps.getInstalledApplications(onlyAppsWithLaunchIntent: true, includeAppIcons: true, includeSystemApps: true);
+
 
     try {
       DateTime endDate = new DateTime.now();
@@ -50,20 +61,36 @@ class _TrackingAppsState extends State<TrackingApps> {
 
 
       for(var x in infoList){
-        for(var app in _apps){
-          if(x.packageName.contains(app.packageName)
-          )
+        ApplicationWithIcon   app =    await DeviceApps.getApp(x.packageName,true);
+
+
+
+          var limit = preferences.getInt(app.packageName);
+          if(x.packageName.contains(app.packageName)&& limit!=null)
           {
+
+     //       var limit =
+       print('final ${app.packageName} $limit');
+       var status = " ";
+       if( x.usage > Duration(seconds: limit))
+       {
+
+         status= "Limit Reached";
+       }
             var item = AppModel(
                 title: app.appName,
-                //  usageinfo: x.usage.toString(),
-                icon: app.icon
+                usageinfo: x.usage,
+                icon: app.icon,
+                time:  Duration(seconds: limit),
+                status: status
 
             );
+
             listApps.add(item);
+
           }
 
-        }
+
       }
 
 
@@ -81,7 +108,31 @@ class _TrackingAppsState extends State<TrackingApps> {
   Widget build(BuildContext context) {
     return MaterialApp(
       home: Scaffold(
-          body: Text("No apps added to track"),
+          body: ListView.builder(
+            itemCount: listApps.length,
+            itemBuilder: (context, int i) => Column(
+              children: [
+                new ListTile(
+                  leading: Image.memory(listApps[i].icon),
+                  title: new Text(listApps[i].title),
+                  subtitle: Row(
+                    children: [
+
+
+                     new  Text('${_printDuration(listApps[i].usageinfo)}  /  '),
+
+                     new Text(_printDuration(listApps[i].time)),
+                      new Text(listApps[i].status)
+
+                    ],
+                  ),
+                  onTap: (){
+                    //  DeviceApps.openApp(listApps[i].package);
+                  },
+                ),
+              ],
+            ),
+          ),
 
           floatingActionButton: FloatingActionButton(
               onPressed: () => Navigator.push(
@@ -98,12 +149,16 @@ class _TrackingAppsState extends State<TrackingApps> {
 }
 class AppModel{
   final String title;
-  final String usageinfo;
+  final Duration usageinfo;
   final Uint8List icon;
+  final Duration time;
+  final String status;
 
   AppModel({
     this.title,
     this.usageinfo,
-    this.icon
+    this.icon,
+    this.time,
+    this.status
   });
 }

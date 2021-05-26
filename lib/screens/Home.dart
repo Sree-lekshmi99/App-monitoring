@@ -57,7 +57,7 @@ class _ListAppBodyState extends State {
    //       {
             var item = AppModel(
                 title: app.appName,
-                usageinfo: x.usage.toString(),
+                usageinfo: x.usage,
                 icon: app.icon
 
             );
@@ -88,7 +88,7 @@ class _ListAppBodyState extends State {
           new ListTile(
             leading: Image.memory(listApps[i].icon),
             title: new Text(listApps[i].title),
-            subtitle: new Text(_printDuration(listApps[i].usageinfo)),
+            subtitle:  new  Text('${_printDuration(listApps[i].usageinfo)}'),
             onTap: (){
               //  DeviceApps.openApp(listApps[i].package);
             },
@@ -101,7 +101,7 @@ class _ListAppBodyState extends State {
 
 class AppModel{
   final String title;
-  final String usageinfo;
+  final Duration usageinfo;
   final Uint8List icon;
 
   AppModel({

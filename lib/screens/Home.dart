@@ -85,13 +85,16 @@ class _ListAppBodyState extends State {
       itemCount: listApps.length,
       itemBuilder: (context, int i) => Column(
         children: [
-          new ListTile(
-            leading: Image.memory(listApps[i].icon),
-            title: new Text(listApps[i].title),
-            subtitle:  new  Text('${_printDuration(listApps[i].usageinfo)}'),
-            onTap: (){
-              //  DeviceApps.openApp(listApps[i].package);
-            },
+          Card(
+            child: new ListTile(
+              leading: Image.memory(listApps[i].icon),
+                            
+              title: new Text(listApps[i].title),
+              subtitle:  new  Text('${_printDuration(listApps[i].usageinfo)}'),
+              onTap: (){
+                //  DeviceApps.openAvpp(listApps[i].package);
+              },
+            ),
           ),
         ],
       ),

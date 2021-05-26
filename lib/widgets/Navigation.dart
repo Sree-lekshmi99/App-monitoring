@@ -44,12 +44,14 @@ class _NavigationState extends State<Navigation> {
     return Scaffold(
       bottomNavigationBar: CurvedNavigationBar(
         index: pageIndex,
-        color: Colors.white54 ,
+        color: Colors.white38 ,
+        backgroundColor: Colors.white,
+
 
 
         items: <Widget>[
-          Icon(Icons.home_outlined,size: 40, color: Colors.black),
-          Icon(Icons.track_changes_outlined,size: 40, color: Colors.black),
+          Icon(Icons.home_outlined,size: 40, color: Colors.red),
+          Icon(Icons.track_changes_outlined,size: 40, color: Colors.red),
 
 
         ],

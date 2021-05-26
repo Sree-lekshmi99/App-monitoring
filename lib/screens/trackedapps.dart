@@ -1,3 +1,5 @@
+import 'package:flutter/cupertino.dart';
+
 import 'to_add_apps.dart';
 import 'package:flutter/material.dart';
 import 'package:device_apps/device_apps.dart';
@@ -35,6 +37,7 @@ class _TrackingAppsState extends State<TrackingApps> {
 
 
 
+
   @override
   void initState() {
    _getApp();
@@ -68,9 +71,7 @@ class _TrackingAppsState extends State<TrackingApps> {
 
   void _getApp() async{
     preferences = await SharedPreferences.getInstance();
-  //  List _apps = await DeviceApps.getInstalledApplications(onlyAppsWithLaunchIntent: true, includeAppIcons: true, includeSystemApps: true);
-
-    try {
+      try {
       DateTime endDate = new DateTime.now();
       DateTime startDate = endDate.subtract(Duration(hours: 1));
       List<AppUsageInfo> infoList = await AppUsage.getAppUsage(startDate, endDate);
@@ -81,21 +82,16 @@ class _TrackingAppsState extends State<TrackingApps> {
       for(var x in infoList){
         ApplicationWithIcon   app =    await DeviceApps.getApp(x.packageName,true);
 
-
-
           var limit = preferences.getInt(app.packageName);
           if(x.packageName.contains(app.packageName)&& limit!=null)
           {
 
-     //       var limit =
        print('final ${app.packageName} $limit');
        var status = " ";
-       if( x.usage > Duration(seconds: limit))
+       if( x.usage >= Duration(seconds: limit))
        {
-
-        showNotification(app.appName);
-
-         status= " Limit Reached";
+       showNotification(app.appName);
+         status= " Limit Reached! ";
 
        }
             var item = AppModel(
@@ -125,24 +121,51 @@ class _TrackingAppsState extends State<TrackingApps> {
             itemCount: listApps.length,
             itemBuilder: (context, int i) => Column(
               children: [
-                new ListTile(
-                  leading: Image.memory(listApps[i].icon),
-                  title: new Text(listApps[i].title),
-                  subtitle: Row(
-                    children: [
+                Card(
+
+                  child: new ListTile(
+                    leading: Image.memory(listApps[i].icon),
+                    
+                    title: new Text(listApps[i].title),
+                    subtitle: Row(
+                      children: [
 
 
-                     new  Text('${_printDuration(listApps[i].usageinfo)}  /  '),
+                       Expanded(
 
-                     new Text(_printDuration(listApps[i].time)),
-                      new Text(listApps[i].status)
+                           child: new  Text('${_printDuration(listApps[i].usageinfo,
 
-                    ],
+                       )}  /',
+                       style: TextStyle(
+                           fontSize: 15,
+
+                       ),)),
+
+
+                       Expanded(
+
+                         child: new Text(_printDuration(listApps[i].time,
+                         ),
+                         style: TextStyle(
+                             fontSize: 15,
+                             color: listApps[i].time <= listApps[i].usageinfo ? Colors.red : Colors.green
+                         ),),
+                       ),
+                        Expanded(
+                          child:  Text(listApps[i].status,
+                            style: TextStyle(fontSize: 9,color: Colors.red,fontWeight: FontWeight.bold),
+
+                        ),)
+
+                      ],
+                    ),
+                    onTap: (){
+                      //  DeviceApps.openApp(listApps[i].package);
+                    },
                   ),
-                  onTap: (){
-                    //  DeviceApps.openApp(listApps[i].package);
-                  },
+
                 ),
+
               ],
             ),
           ),
@@ -160,6 +183,7 @@ class _TrackingAppsState extends State<TrackingApps> {
     );
   }
   showNotification(String payload) async {
+
     var android = new AndroidNotificationDetails(
         'channel id', 'channel NAME', 'CHANNEL DESCRIPTION',
         priority: Priority.high,importance: Importance.max
@@ -167,8 +191,9 @@ class _TrackingAppsState extends State<TrackingApps> {
     var iOS = new IOSNotificationDetails();
     var platform = new NotificationDetails(android: android, iOS: iOS);
     await flutterLocalNotificationsPlugin.show(
-        0, 'Time Exceded', 'Usage Time Limit for $payload', platform,
+        0, 'Time Exceded', 'You have reached the usage limit for $payload', platform,
         payload: 'You have reached the usage limit for $payload');
+   // await flutterLocalNotificationsPlugin.cancelAll();
   }
 }
 class AppModel{

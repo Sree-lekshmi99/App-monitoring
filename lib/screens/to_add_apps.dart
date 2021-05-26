@@ -6,6 +6,8 @@ import 'dart:typed_data';
 import 'trackedapps.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter_datetime_picker/flutter_datetime_picker.dart';
+import 'package:monitoring_app/notifications/notificationmanger.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 
 class AddAppsToTrack extends StatefulWidget {
   const AddAppsToTrack({Key key}) : super(key: key);
@@ -30,9 +32,7 @@ class _AddAppsToTrackState extends State<AddAppsToTrack> {
 
   void _getApp() async{
     preferences = await SharedPreferences.getInstance();
-  //  List<String> trackedAppsPackages = preferences.getKeys().toList();
 
-  //  List _apps = await DeviceApps.getInstalledApplications(onlyAppsWithLaunchIntent: true, includeAppIcons: true, includeSystemApps: true);
 
     try {
       DateTime endDate = new DateTime.now();
@@ -46,21 +46,19 @@ class _AddAppsToTrackState extends State<AddAppsToTrack> {
 
       for(var x in infoList){
   ApplicationWithIcon   app =    await DeviceApps.getApp(x.packageName,true);
-       // for(var app in _apps){
-       //    if(x.packageName.contains(app.packageName)
-       //    )
-       //    {
+
             var item = AppModel(
                 title: app.appName,
                 //  usageinfo: x.usage.toString(),
                 icon: app.icon,
                 package: app.packageName
-
             );
             listApps.add(item);
-       //   }
 
-   //     }
+
+
+
+
       }
 
 
@@ -87,7 +85,7 @@ class _AddAppsToTrackState extends State<AddAppsToTrack> {
               new ListTile(
                 leading: Image.memory(listApps[i].icon),
                 title: new Text(listApps[i].title),
-                //   subtitle: new Text(listApps[i].usageinfo),
+
 
                 onTap: () {
                   int maxLimitime;
@@ -108,7 +106,7 @@ class _AddAppsToTrackState extends State<AddAppsToTrack> {
                     print('saved timed ${preferences.getInt(listApps[i].package)}');
 
 
-                  //  await preferences.setString('package', listApps[i].package);
+
 
 
 
@@ -118,7 +116,7 @@ class _AddAppsToTrackState extends State<AddAppsToTrack> {
                     locale: LocaleType.en,
                   );
 
-                   // DeviceApps.openApp(listApps[i].package);
+
                 },
               ),
             ],
@@ -140,11 +138,13 @@ class AppModel{
   final String package;
 
 
+
   AppModel({
     this.title,
     this.usageinfo,
     this.icon,
     this.package,
+
 
   });
 }

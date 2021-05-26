@@ -4,7 +4,8 @@ import 'package:device_apps/device_apps.dart';
 import 'dart:typed_data';
 import 'package:app_usage/app_usage.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'to_add_apps.dart';
+import 'package:monitoring_app/notifications/notificationmanger.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 
 
 class TrackApps extends StatelessWidget {
@@ -29,13 +30,33 @@ class _TrackingAppsState extends State<TrackingApps> {
   List listApps = [];
   List _infos = [];
   SharedPreferences preferences;
+  NotificationManager notificationManager = NotificationManager();
+  FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin;
+
 
 
   @override
   void initState() {
    _getApp();
     super.initState();
+    flutterLocalNotificationsPlugin= new FlutterLocalNotificationsPlugin();
+   var android = new AndroidInitializationSettings('@mipmap/ic_launcher');
+   var iOS = new IOSInitializationSettings();
+   var initSetttings = new InitializationSettings(android: android, iOS: iOS);
+   flutterLocalNotificationsPlugin.initialize(initSetttings,
+       onSelectNotification: onSelectNotification);
 
+
+  }
+
+  Future onSelectNotification(String payload) {
+    debugPrint("payload : $payload");
+    // showDialog(
+    //   context: context,
+    //   // builder: (_) => new AlertDialog(
+    //   //   title: new Text('Notification'),
+    //   //   content: new Text('$payload'),
+    //   // ),
   }
 
   String _printDuration(Duration duration) {
@@ -49,7 +70,6 @@ class _TrackingAppsState extends State<TrackingApps> {
     preferences = await SharedPreferences.getInstance();
   //  List _apps = await DeviceApps.getInstalledApplications(onlyAppsWithLaunchIntent: true, includeAppIcons: true, includeSystemApps: true);
 
-
     try {
       DateTime endDate = new DateTime.now();
       DateTime startDate = endDate.subtract(Duration(hours: 1));
@@ -58,8 +78,6 @@ class _TrackingAppsState extends State<TrackingApps> {
         _infos = infoList;
 
       });
-
-
       for(var x in infoList){
         ApplicationWithIcon   app =    await DeviceApps.getApp(x.packageName,true);
 
@@ -75,7 +93,10 @@ class _TrackingAppsState extends State<TrackingApps> {
        if( x.usage > Duration(seconds: limit))
        {
 
-         status= "Limit Reached";
+        showNotification(app.appName);
+
+         status= " Limit Reached";
+
        }
             var item = AppModel(
                 title: app.appName,
@@ -87,20 +108,12 @@ class _TrackingAppsState extends State<TrackingApps> {
             );
 
             listApps.add(item);
-
           }
-
-
-      }
-
-
+     }
 
     } on AppUsageException catch (exception) {
       print(exception);
     }
-
-
-
     //reloading state
     setState(() {});
   }
@@ -146,6 +159,17 @@ class _TrackingAppsState extends State<TrackingApps> {
 
     );
   }
+  showNotification(String payload) async {
+    var android = new AndroidNotificationDetails(
+        'channel id', 'channel NAME', 'CHANNEL DESCRIPTION',
+        priority: Priority.high,importance: Importance.max
+    );
+    var iOS = new IOSNotificationDetails();
+    var platform = new NotificationDetails(android: android, iOS: iOS);
+    await flutterLocalNotificationsPlugin.show(
+        0, 'Time Exceded', 'Usage Time Limit for $payload', platform,
+        payload: 'You have reached the usage limit for $payload');
+  }
 }
 class AppModel{
   final String title;
@@ -153,12 +177,25 @@ class AppModel{
   final Uint8List icon;
   final Duration time;
   final String status;
+  final NotificationManager manger;
+  final Color color;
+
+
 
   AppModel({
     this.title,
     this.usageinfo,
     this.icon,
     this.time,
-    this.status
+    this.status,
+    this.manger,
+    this.color
   });
 }
+
+
+
+
+
+
+

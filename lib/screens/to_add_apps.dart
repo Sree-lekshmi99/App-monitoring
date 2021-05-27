@@ -2,6 +2,7 @@
 import 'package:flutter/material.dart';
 import 'package:device_apps/device_apps.dart';
 import 'package:app_usage/app_usage.dart';
+import 'package:monitoring_app/functions/spin.dart';
 import 'dart:typed_data';
 import 'trackedapps.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -78,49 +79,62 @@ class _AddAppsToTrackState extends State<AddAppsToTrack> {
   Widget build(BuildContext context) {
     return MaterialApp(
       home: Scaffold(
-        body: ListView.builder(
-          itemCount: listApps.length,
-          itemBuilder: (context, int i) => Column(
-            children: [
-              new ListTile(
-                leading: Image.memory(listApps[i].icon),
-                title: new Text(listApps[i].title),
+        body: Column(
+          children: [
+             Expanded(
+              child:listApps.length == 0? loading: ListView.builder(
+                itemCount: listApps.length,
+                itemBuilder: (context, int i) => Column(
+                  children: [
+                    Card(
+                      elevation: 3,
+                      shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.all(Radius.circular(10)
+                          ),
+                          side: BorderSide(width: 2, color: Colors.grey.shade100)),
+                      child: new ListTile(
+                        leading: Image.memory(listApps[i].icon),
+                        title: new Text(listApps[i].title),
 
 
-                onTap: () {
-                  int maxLimitime;
-                  DatePicker.showTimePicker(context,
-                    theme: DatePickerTheme(
-                        doneStyle: TextStyle(color: Colors.black),
-                        containerHeight: MediaQuery.of(context).size.height * 0.3
+                        onTap: () {
+                          int maxLimitime;
+                          DatePicker.showTimePicker(context,
+                            theme: DatePickerTheme(
+                                doneStyle: TextStyle(color: Colors.black),
+                                containerHeight: MediaQuery.of(context).size.height * 0.3
+                            ),
+                            showTitleActions: true,
+                            onConfirm: (time) async  {
+                            print(' confirm $time');
+                            maxLimitime= (time.hour * 60 * 60) + (time.minute * 60);
+                            print(' seconds $maxLimitime ${listApps[i].package}');
+
+
+                            await preferences.setInt(listApps[i].package, maxLimitime);
+
+                            print('saved timed ${preferences.getInt(listApps[i].package)}');
+
+
+
+
+
+
+
+                            },
+                            currentTime: DateTime.utc(0),
+                            locale: LocaleType.en,
+                          );
+
+
+                        },
+                      ),
                     ),
-                    showTitleActions: true,
-                    onConfirm: (time) async  {
-                    print(' confirm $time');
-                    maxLimitime= (time.hour * 60 * 60) + (time.minute * 60);
-                    print(' seconds $maxLimitime ${listApps[i].package}');
-
-
-                    await preferences.setInt(listApps[i].package, maxLimitime);
-
-                    print('saved timed ${preferences.getInt(listApps[i].package)}');
-
-
-
-
-
-
-
-                    },
-                    currentTime: DateTime.utc(0),
-                    locale: LocaleType.en,
-                  );
-
-
-                },
+                  ],
+                ),
               ),
-            ],
-          ),
+            ),
+          ],
         ),
 
       ),

@@ -1,4 +1,5 @@
 import 'package:flutter/cupertino.dart';
+import 'package:monitoring_app/functions/spin.dart';
 
 import 'to_add_apps.dart';
 import 'package:flutter/material.dart';
@@ -117,65 +118,75 @@ class _TrackingAppsState extends State<TrackingApps> {
   Widget build(BuildContext context) {
     return MaterialApp(
       home: Scaffold(
-          body: ListView.builder(
-            itemCount: listApps.length,
-            itemBuilder: (context, int i) => Column(
-              children: [
-                Card(
+          body: Center(
+            child: listApps.length== null? loading : ListView.builder(
+              itemCount: listApps.length,
+              itemBuilder: (context, int i) => Column(
+                children: [
+                  Card(
+                    elevation: 3,
+                    shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.all(Radius.circular(10)
+                        ),
+                        side: BorderSide(width: 2, color: Colors.grey)),
 
-                  child: new ListTile(
-                    leading: Image.memory(listApps[i].icon),
-                    
-                    title: new Text(listApps[i].title),
-                    subtitle: Row(
-                      children: [
+                    child: new ListTile(
+                      leading: Image.memory(listApps[i].icon),
 
-
-                       Expanded(
-
-                           child: new  Text('${_printDuration(listApps[i].usageinfo,
-
-                       )}  /',
-                       style: TextStyle(
-                           fontSize: 15,
-
-                       ),)),
+                      title: new Text(listApps[i].title),
+                      subtitle: Row(
+                        children: [
 
 
-                       Expanded(
+                         Expanded(
 
-                         child: new Text(_printDuration(listApps[i].time,
-                         ),
+                             child: new  Text('${_printDuration(listApps[i].usageinfo,
+
+                         )}  /',
                          style: TextStyle(
                              fontSize: 15,
-                             color: listApps[i].time <= listApps[i].usageinfo ? Colors.red : Colors.green
-                         ),),
-                       ),
-                        Expanded(
-                          child:  Text(listApps[i].status,
-                            style: TextStyle(fontSize: 9,color: Colors.red,fontWeight: FontWeight.bold),
 
-                        ),)
+                         ),)),
 
-                      ],
+
+                         Expanded(
+
+                           child: new Text(_printDuration(listApps[i].time,
+                           ),
+                           style: TextStyle(
+                               fontSize: 15,
+                               color: listApps[i].time <= listApps[i].usageinfo ? Colors.red : Colors.green
+                           ),),
+                         ),
+                          Expanded(
+                            child:  Text(listApps[i].status,
+                              style: TextStyle(fontSize: 9,color: Colors.red,fontWeight: FontWeight.bold),
+
+                          ),)
+
+                        ],
+                      ),
+                      onTap: (){
+                        //  DeviceApps.openApp(listApps[i].package);
+                      },
                     ),
-                    onTap: (){
-                      //  DeviceApps.openApp(listApps[i].package);
-                    },
+
                   ),
 
-                ),
-
-              ],
+                ],
+              ),
             ),
           ),
 
-          floatingActionButton: FloatingActionButton(
-              onPressed: () => Navigator.push(
-                  context,
-                  new MaterialPageRoute(
-                      builder: (context) => AddAppsToTrack())),
-              child: new Icon(Icons.add))
+          // floatingActionButton: FloatingActionButton(
+          //     onPressed: () => Navigator.push(
+          //         context,
+          //         new MaterialPageRoute(
+          //             builder: (context) => AddAppsToTrack()
+          //         )
+          //
+          //     ),
+          //     child: new Icon(Icons.add))
       ),
 
 

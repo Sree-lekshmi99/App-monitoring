@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:device_apps/device_apps.dart';
 import 'package:app_usage/app_usage.dart';
 import 'dart:typed_data';
+import 'package:monitoring_app/functions/spin.dart';
 
 
 class ListAppsPage extends StatelessWidget {
@@ -51,20 +52,13 @@ class _ListAppBodyState extends State {
 
       for(var x in infoList){
         ApplicationWithIcon   app =    await DeviceApps.getApp(x.packageName,true);
-   //     for(var app in _apps){
-   //       if(x.packageName.contains(app.packageName)
-    //      )
-   //       {
             var item = AppModel(
                 title: app.appName,
                 usageinfo: x.usage,
                 icon: app.icon
-
             );
             listApps.add(item);
-        //  }
 
-       // }
       }
 
 
@@ -81,22 +75,29 @@ class _ListAppBodyState extends State {
 
   @override
   Widget build(BuildContext context) {
-    return ListView.builder(
-      itemCount: listApps.length,
-      itemBuilder: (context, int i) => Column(
-        children: [
-          Card(
-            child: new ListTile(
-              leading: Image.memory(listApps[i].icon),
-                            
-              title: new Text(listApps[i].title),
-              subtitle:  new  Text('${_printDuration(listApps[i].usageinfo)}'),
-              onTap: (){
-                //  DeviceApps.openAvpp(listApps[i].package);
-              },
+    return Center(
+      child: listApps.length== null? loading : ListView.builder(
+        itemCount: listApps.length,
+        itemBuilder: (context, int i) => Column(
+          children: [
+            Card(
+              elevation: 3,
+              shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.all(Radius.circular(10)
+                      ),
+                  side: BorderSide(width: 2, color: Colors.grey)),
+              child: new ListTile(
+                leading: Image.memory(listApps[i].icon),
+
+                title: new Text(listApps[i].title),
+                subtitle:  new  Text('${_printDuration(listApps[i].usageinfo)}'),
+                onTap: (){
+                  //  DeviceApps.openAvpp(listApps[i].package);
+                },
+              ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }

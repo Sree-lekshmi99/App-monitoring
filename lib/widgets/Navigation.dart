@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:curved_navigation_bar/curved_navigation_bar.dart';
 import 'package:monitoring_app/screens/Home.dart';
+import 'package:monitoring_app/screens/to_add_apps.dart';
 import 'package:monitoring_app/screens/trackedapps.dart';
 
 class Navigation extends StatefulWidget {
@@ -14,6 +15,7 @@ class _NavigationState extends State<Navigation> {
   int pageIndex = 0;
   final ListAppsPage _homescreen = ListAppsPage();
   final TrackApps _trackApps = new TrackApps();
+  final AddAppsToTrack _addAppsToTrack = new AddAppsToTrack();
 
   Widget _showscreens = new ListAppsPage();
 
@@ -26,6 +28,9 @@ class _NavigationState extends State<Navigation> {
         break;
       case 1:
         return _trackApps;
+        break;
+      case 2:
+        return _addAppsToTrack;
         break;
       default:
         return new Container(
@@ -52,6 +57,7 @@ class _NavigationState extends State<Navigation> {
         items: <Widget>[
           Icon(Icons.home_outlined,size: 40, color: Colors.red),
           Icon(Icons.track_changes_outlined,size: 40, color: Colors.red),
+          Icon(Icons.add,size: 40, color: Colors.red,)
 
 
         ],

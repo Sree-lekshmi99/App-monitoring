@@ -101,6 +101,7 @@ class _AddAppsToTrackState extends State<AddAppsToTrack> {
                           int maxLimitime;
                           DatePicker.showTimePicker(context,
                             theme: DatePickerTheme(
+                              backgroundColor: Colors.blueGrey,
                                 doneStyle: TextStyle(color: Colors.black),
                                 containerHeight: MediaQuery.of(context).size.height * 0.3
                             ),

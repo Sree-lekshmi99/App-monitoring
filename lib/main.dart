@@ -9,10 +9,13 @@ import 'screens/to_add_apps.dart';
 import 'screens/trackedapps.dart';
 
 
+
+
 void main() {
   runApp(MaterialApp(
-      debugShowCheckedModeBanner: true,
+      debugShowCheckedModeBanner: false,
       title: 'App Tacker',
       home: Navigation()
+
   ));
 }

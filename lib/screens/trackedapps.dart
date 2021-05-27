@@ -119,7 +119,10 @@ class _TrackingAppsState extends State<TrackingApps> {
     return MaterialApp(
       home: Scaffold(
           body: Center(
-            child: listApps.length== null? loading : ListView.builder(
+            child: listApps.length== 0? Center(child: Text("Sorry! No apps are added for tracking",style: TextStyle(
+              fontSize: 16, fontWeight: FontWeight.w100, color: Colors.black
+            ),))
+                : ListView.builder(
               itemCount: listApps.length,
               itemBuilder: (context, int i) => Column(
                 children: [
